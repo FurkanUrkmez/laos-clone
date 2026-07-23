@@ -1,0 +1,24 @@
+node_modules/
+.env
+.env.local
+dist/
+build/
+*.log
+
+# Expo
+.expo/
+mobile/.expo/
+
+# Prisma generated client
+server/src/generated/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local AI tool skill caches (not project code)
+**/.claude/skills/
+**/.agents/skills/
+**/.windsurf/skills/
+**/skills-lock.json
+**/.claude/settings.json

@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: laos_clone_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: laos_admin
+      POSTGRES_PASSWORD: laos_dev_password
+      POSTGRES_DB: laos_clone
+    ports:
+      - "5432:5432"
+    volumes:
+      - laos_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  laos_postgres_data:
