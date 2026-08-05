@@ -16,4 +16,6 @@ export const env = {
   // Saniye cinsinden
   jwtAccessExpiresInSeconds: Number(process.env.JWT_ACCESS_EXPIRES_IN ?? 900),
   jwtRefreshExpiresInSeconds: Number(process.env.JWT_REFRESH_EXPIRES_IN ?? 2592000),
+  adminJwtAccessSecret: required('ADMIN_JWT_ACCESS_SECRET'),
+  adminJwtRefreshSecret: required('ADMIN_JWT_REFRESH_SECRET'),
 };
