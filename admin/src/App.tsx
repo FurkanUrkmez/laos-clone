@@ -3,6 +3,7 @@ import { LoginPage } from './pages/LoginPage';
 import { BusinessPage } from './pages/BusinessPage';
 import { CampaignsPage } from './pages/CampaignsPage';
 import { BlogPage } from './pages/BlogPage';
+import { CustomersPage } from './pages/CustomersPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
 
@@ -16,6 +17,7 @@ export function App() {
           <Route path="business" element={<BusinessPage />} />
           <Route path="campaigns" element={<CampaignsPage />} />
           <Route path="blog" element={<BlogPage />} />
+          <Route path="customers" element={<CustomersPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
