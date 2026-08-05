@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { AdminUser } from '../types';
 import { setCurrentAccessToken } from '../api/tokenStore';
+import { registerAuthFailureHandler } from '../api/client';
 import { loginRequest, meRequest, refreshRequest } from '../api/auth';
 
 const REFRESH_TOKEN_KEY = 'laos_admin_refresh_token';
@@ -47,3 +48,10 @@ export const useAdminAuthStore = create<AdminAuthState>((set) => ({
     set({ adminUser: null, isAuthenticated: false });
   },
 }));
+
+// Let the API client's response interceptor force a logout when a 401
+// survives a refresh attempt (expired/invalid refresh token), so the app
+// falls back to `isAuthenticated: false` and `ProtectedRoute` sends the user
+// to /login. Using `getState()` here (module scope, outside React) avoids
+// needing to import the hook into a non-component context.
+registerAuthFailureHandler(() => useAdminAuthStore.getState().logout());
