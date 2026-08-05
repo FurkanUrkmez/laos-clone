@@ -7,6 +7,7 @@ Kahve dükkânı sadakat programı uygulaması. İki parçadan oluşur: bir Expr
 ```
 server/   Express + TypeScript API, Prisma ORM, PostgreSQL
 mobile/   Expo (React Native) uygulaması
+admin/    Vite + React admin paneli (işletme/kampanya/blog/müşteri yönetimi, QR puan sistemi)
 ```
 
 ### Server
@@ -21,6 +22,23 @@ mobile/   Expo (React Native) uygulaması
 - Expo SDK 54, React Native 0.81
 - React Navigation (stack + bottom tabs)
 - Zustand (state), NativeWind/Tailwind (stil), Axios (API istekleri)
+
+### Admin
+
+- Vite, React 18, TypeScript
+- React Router, TanStack Query (server state), Zustand (auth state), Axios
+- `html5-qrcode` ile tarayıcı üzerinden QR okuma
+
+## Admin Paneli Kurulumu
+
+```bash
+cd admin
+cp .env.example .env
+npm install
+npm run dev
+```
+
+Varsayılan admin hesabı (seed ile oluşturulur): `admin@lakiscoffee.com` / `admin1234`
 
 ## Kurulum
 
@@ -64,3 +82,5 @@ Expo Go ile telefondan test edebilmek için `EXPO_PUBLIC_API_URL`'in `localhost`
 | `server/.env` | `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET` | JWT imzalama anahtarları |
 | `server/.env` | `JWT_ACCESS_EXPIRES_IN`, `JWT_REFRESH_EXPIRES_IN` | Token ömürleri (saniye) |
 | `mobile/.env` | `EXPO_PUBLIC_API_URL` | Mobil uygulamanın erişeceği API adresi |
+| `server/.env` | `ADMIN_JWT_ACCESS_SECRET`, `ADMIN_JWT_REFRESH_SECRET` | Admin paneli JWT imzalama anahtarları |
+| `admin/.env` | `VITE_API_URL` | Admin panelinin erişeceği API adresi |
