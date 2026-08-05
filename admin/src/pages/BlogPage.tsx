@@ -8,6 +8,7 @@ import {
   listBlogPostsRequest,
   updateBlogPostRequest,
 } from '../api/blogPosts';
+import { getApiErrorMessage } from '../api/errorMessage';
 import type { BlogPost } from '../types';
 
 const emptyForm: BlogPostInput = { title: '', content: '', isPublished: false };
@@ -17,6 +18,7 @@ export function BlogPage() {
   const { data: posts = [], isLoading } = useQuery({ queryKey: ['blogPosts'], queryFn: listBlogPostsRequest });
   const [form, setForm] = useState<BlogPostInput>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['blogPosts'] });
 
@@ -25,7 +27,9 @@ export function BlogPage() {
     onSuccess: () => {
       invalidate();
       setForm(emptyForm);
+      setError(null);
     },
+    onError: (err) => setError(getApiErrorMessage(err, 'Yazı eklenemedi')),
   });
 
   const updateMutation = useMutation({
@@ -35,16 +39,23 @@ export function BlogPage() {
       invalidate();
       setForm(emptyForm);
       setEditingId(null);
+      setError(null);
     },
+    onError: (err) => setError(getApiErrorMessage(err, 'Yazı güncellenemedi')),
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteBlogPostRequest,
-    onSuccess: invalidate,
+    onSuccess: () => {
+      invalidate();
+      setError(null);
+    },
+    onError: (err) => setError(getApiErrorMessage(err, 'Yazı silinemedi')),
   });
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    setError(null);
     if (editingId) {
       updateMutation.mutate({ id: editingId, input: form });
     } else {
@@ -98,6 +109,7 @@ export function BlogPage() {
             </button>
           )}
         </div>
+        {error && <p className="error-text">{error}</p>}
       </form>
 
       {isLoading ? (

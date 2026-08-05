@@ -2,6 +2,7 @@ import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getBusinessRequest, updateBusinessRequest } from '../api/business';
+import { getApiErrorMessage } from '../api/errorMessage';
 import type { Business } from '../types';
 
 type FormState = Pick<
@@ -14,6 +15,7 @@ export function BusinessPage() {
   const { data: business, isLoading } = useQuery({ queryKey: ['business'], queryFn: getBusinessRequest });
   const [form, setForm] = useState<FormState | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (business) {
@@ -33,6 +35,10 @@ export function BusinessPage() {
     onSuccess: (updated) => {
       queryClient.setQueryData(['business'], updated);
       setMessage('Kaydedildi');
+      setError(null);
+    },
+    onError: (err) => {
+      setError(getApiErrorMessage(err, 'İşletme bilgileri kaydedilemedi'));
     },
   });
 
@@ -40,6 +46,7 @@ export function BusinessPage() {
     event.preventDefault();
     if (!form) return;
     setMessage(null);
+    setError(null);
     mutation.mutate(form);
   }
 
@@ -98,6 +105,7 @@ export function BusinessPage() {
           {mutation.isPending ? 'Kaydediliyor...' : 'Kaydet'}
         </button>
         {message && <p style={{ color: 'green', marginTop: 8 }}>{message}</p>}
+        {error && <p className="error-text">{error}</p>}
       </form>
     </div>
   );

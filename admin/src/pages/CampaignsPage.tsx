@@ -8,6 +8,7 @@ import {
   listCampaignsRequest,
   updateCampaignRequest,
 } from '../api/campaigns';
+import { getApiErrorMessage } from '../api/errorMessage';
 import type { Campaign } from '../types';
 
 const emptyForm: CampaignInput = { title: '', description: '', startDate: '', endDate: '', isActive: true };
@@ -20,6 +21,7 @@ export function CampaignsPage() {
   });
   const [form, setForm] = useState<CampaignInput>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['campaigns'] });
 
@@ -28,7 +30,9 @@ export function CampaignsPage() {
     onSuccess: () => {
       invalidate();
       setForm(emptyForm);
+      setError(null);
     },
+    onError: (err) => setError(getApiErrorMessage(err, 'Kampanya eklenemedi')),
   });
 
   const updateMutation = useMutation({
@@ -38,16 +42,23 @@ export function CampaignsPage() {
       invalidate();
       setForm(emptyForm);
       setEditingId(null);
+      setError(null);
     },
+    onError: (err) => setError(getApiErrorMessage(err, 'Kampanya güncellenemedi')),
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteCampaignRequest,
-    onSuccess: invalidate,
+    onSuccess: () => {
+      invalidate();
+      setError(null);
+    },
+    onError: (err) => setError(getApiErrorMessage(err, 'Kampanya silinemedi')),
   });
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    setError(null);
     if (editingId) {
       updateMutation.mutate({ id: editingId, input: form });
     } else {
@@ -123,6 +134,7 @@ export function CampaignsPage() {
             </button>
           )}
         </div>
+        {error && <p className="error-text">{error}</p>}
       </form>
 
       {isLoading ? (
