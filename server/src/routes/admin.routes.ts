@@ -5,6 +5,7 @@ import { adminCampaignsRouter } from './adminCampaigns.routes';
 import { adminBlogPostsRouter } from './adminBlogPosts.routes';
 import { adminCustomersRouter } from './adminCustomers.routes';
 import { adminProductsRouter } from './adminProducts.routes';
+import { adminLoyaltyRouter } from './adminLoyalty.routes';
 
 export const adminRouter = Router();
 
@@ -14,3 +15,4 @@ adminRouter.use('/campaigns', adminCampaignsRouter);
 adminRouter.use('/blog-posts', adminBlogPostsRouter);
 adminRouter.use('/customers', adminCustomersRouter);
 adminRouter.use('/products', adminProductsRouter);
+adminRouter.use('/loyalty', adminLoyaltyRouter);
