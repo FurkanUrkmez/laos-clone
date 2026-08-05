@@ -40,6 +40,8 @@ npm run dev
 
 Varsayılan admin hesabı (seed ile oluşturulur): `admin@lakiscoffee.com` / `admin1234`
 
+> ⚠️ **Uyarı:** Bu, sadece yerel geliştirme için seed edilen bir varsayılan şifredir. Local dışında (staging, production veya herhangi bir dışa açık ortam) deploy etmeden önce mutlaka değiştirilmelidir.
+
 ## Kurulum
 
 ### 1. PostgreSQL
