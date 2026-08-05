@@ -60,6 +60,7 @@ export async function scanProduct(businessId: string, input: ScanInput) {
   const pointsBalance = getPointsBalance(sums.earn, sums.redeem);
 
   return {
+    userId,
     pointsBalance,
     rewardEligible: isRewardEligible(pointsBalance, business.loyaltyTargetCups),
     threshold: business.loyaltyTargetCups,

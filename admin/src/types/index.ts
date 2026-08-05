@@ -63,6 +63,7 @@ export interface Product {
 }
 
 export interface ScanResult {
+  userId: string;
   pointsBalance: number;
   rewardEligible: boolean;
   threshold: number;
