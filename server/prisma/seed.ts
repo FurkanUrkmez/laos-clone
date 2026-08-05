@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import bcrypt from 'bcrypt';
 import { PrismaClient } from '../src/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 
@@ -26,6 +27,19 @@ async function main() {
         sun: '09:00-22:00',
       },
       loyaltyTargetCups: 6,
+    },
+  });
+
+  const adminPasswordHash = await bcrypt.hash('admin1234', 10);
+  await prisma.adminUser.upsert({
+    where: { email: 'admin@lakiscoffee.com' },
+    update: {},
+    create: {
+      id: 'seed-admin-lakis-coffee',
+      businessId: business.id,
+      email: 'admin@lakiscoffee.com',
+      passwordHash: adminPasswordHash,
+      fullName: 'Lakis Coffee Admin',
     },
   });
 
