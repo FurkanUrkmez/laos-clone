@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const scanSchema = z.object({
   qrValue: z.string().min(1, 'qrValue gerekli'),
-  productId: z.string().uuid('Geçerli bir ürün seçin'),
+  productId: z.string().min(1, 'Geçerli bir ürün seçin'),
 });
 
 export const redeemSchema = z.object({
