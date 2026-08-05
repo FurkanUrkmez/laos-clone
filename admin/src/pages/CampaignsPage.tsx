@@ -1,0 +1,151 @@
+import type { FormEvent } from 'react';
+import { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type { CampaignInput } from '../api/campaigns';
+import {
+  createCampaignRequest,
+  deleteCampaignRequest,
+  listCampaignsRequest,
+  updateCampaignRequest,
+} from '../api/campaigns';
+import type { Campaign } from '../types';
+
+const emptyForm: CampaignInput = { title: '', description: '', startDate: '', endDate: '', isActive: true };
+
+export function CampaignsPage() {
+  const queryClient = useQueryClient();
+  const { data: campaigns = [], isLoading } = useQuery({
+    queryKey: ['campaigns'],
+    queryFn: listCampaignsRequest,
+  });
+  const [form, setForm] = useState<CampaignInput>(emptyForm);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const invalidate = () => queryClient.invalidateQueries({ queryKey: ['campaigns'] });
+
+  const createMutation = useMutation({
+    mutationFn: createCampaignRequest,
+    onSuccess: () => {
+      invalidate();
+      setForm(emptyForm);
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, input }: { id: string; input: Partial<CampaignInput> }) =>
+      updateCampaignRequest(id, input),
+    onSuccess: () => {
+      invalidate();
+      setForm(emptyForm);
+      setEditingId(null);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteCampaignRequest,
+    onSuccess: invalidate,
+  });
+
+  function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    if (editingId) {
+      updateMutation.mutate({ id: editingId, input: form });
+    } else {
+      createMutation.mutate(form);
+    }
+  }
+
+  function startEdit(campaign: Campaign) {
+    setEditingId(campaign.id);
+    setForm({
+      title: campaign.title,
+      description: campaign.description ?? '',
+      startDate: campaign.startDate.slice(0, 10),
+      endDate: campaign.endDate.slice(0, 10),
+      isActive: campaign.isActive,
+    });
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setForm(emptyForm);
+  }
+
+  return (
+    <div>
+      <h2>Kampanyalar</h2>
+      <form className="card" onSubmit={handleSubmit} style={{ maxWidth: 480 }}>
+        <label>
+          Başlık
+          <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
+        </label>
+        <label>
+          Açıklama
+          <textarea
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+          />
+        </label>
+        <label>
+          Başlangıç Tarihi
+          <input
+            type="date"
+            value={form.startDate}
+            onChange={(e) => setForm({ ...form, startDate: e.target.value })}
+            required
+          />
+        </label>
+        <label>
+          Bitiş Tarihi
+          <input
+            type="date"
+            value={form.endDate}
+            onChange={(e) => setForm({ ...form, endDate: e.target.value })}
+            required
+          />
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={form.isActive}
+            onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
+            style={{ width: 'auto', display: 'inline-block', marginRight: 8 }}
+          />
+          Aktif
+        </label>
+        <div className="row-actions">
+          <button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
+            {editingId ? 'Güncelle' : 'Ekle'}
+          </button>
+          {editingId && (
+            <button type="button" onClick={cancelEdit}>
+              Vazgeç
+            </button>
+          )}
+        </div>
+      </form>
+
+      {isLoading ? (
+        <p>Yükleniyor...</p>
+      ) : (
+        campaigns.map((campaign) => (
+          <div key={campaign.id} className="card">
+            <strong>{campaign.title}</strong> {campaign.isActive ? '' : '(pasif)'}
+            <p>{campaign.description}</p>
+            <p>
+              {campaign.startDate.slice(0, 10)} — {campaign.endDate.slice(0, 10)}
+            </p>
+            <div className="row-actions">
+              <button type="button" onClick={() => startEdit(campaign)}>
+                Düzenle
+              </button>
+              <button type="button" onClick={() => deleteMutation.mutate(campaign.id)}>
+                Sil
+              </button>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
