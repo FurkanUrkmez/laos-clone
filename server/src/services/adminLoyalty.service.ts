@@ -11,7 +11,11 @@ import type { RedeemInput, ScanInput } from '../validators/adminLoyalty.validato
 
 type PrismaClientOrTx = typeof prisma | Prisma.TransactionClient;
 
-async function getUserPointsSums(client: PrismaClientOrTx, businessId: string, userId: string) {
+export async function getUserPointsSums(
+  client: PrismaClientOrTx,
+  businessId: string,
+  userId: string,
+) {
   const [earnAgg, redeemAgg] = await Promise.all([
     client.loyaltyPointTransaction.aggregate({
       where: { businessId, userId, type: 'EARN' },
