@@ -2,6 +2,7 @@ import type { ChangeEvent } from 'react';
 import { useState } from 'react';
 import { uploadImageRequest } from '../api/uploads';
 import { getApiErrorMessage } from '../api/errorMessage';
+import { resolveAssetUrl } from '../api/assetUrl';
 
 interface ImageUploadFieldProps {
   label: string;
@@ -33,7 +34,11 @@ export function ImageUploadField({ label, value, onChange }: ImageUploadFieldPro
     <label>
       {label}
       {value && (
-        <img src={value} alt="" style={{ maxWidth: 160, display: 'block', marginBottom: 8, borderRadius: 8 }} />
+        <img
+          src={resolveAssetUrl(value) ?? undefined}
+          alt=""
+          style={{ maxWidth: 160, display: 'block', marginBottom: 8, borderRadius: 8 }}
+        />
       )}
       <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFileChange} disabled={uploading} />
       {uploading && <p>Yükleniyor…</p>}

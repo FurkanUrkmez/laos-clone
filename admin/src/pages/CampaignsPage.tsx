@@ -9,6 +9,7 @@ import {
   updateCampaignRequest,
 } from '../api/campaigns';
 import { getApiErrorMessage } from '../api/errorMessage';
+import { resolveAssetUrl } from '../api/assetUrl';
 import { ImageUploadField } from '../components/ImageUploadField';
 import type { Campaign } from '../types';
 
@@ -150,7 +151,11 @@ export function CampaignsPage() {
         campaigns.map((campaign) => (
           <div key={campaign.id} className="card">
             {campaign.imageUrl && (
-              <img src={campaign.imageUrl} alt="" style={{ maxWidth: 160, borderRadius: 8, marginBottom: 8 }} />
+              <img
+                src={resolveAssetUrl(campaign.imageUrl) ?? undefined}
+                alt=""
+                style={{ maxWidth: 160, borderRadius: 8, marginBottom: 8 }}
+              />
             )}
             <strong>{campaign.title}</strong> {campaign.isActive ? '' : '(pasif)'}
             <p>{campaign.description}</p>

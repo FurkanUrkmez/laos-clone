@@ -10,6 +10,7 @@ import { myLoyaltyRequest, MyLoyalty } from '../../services/api/loyalty';
 import { campaignsRequest, Campaign } from '../../services/api/campaigns';
 import { blogPostsRequest, BlogPost } from '../../services/api/blog';
 import { usePaginatedList } from '../../hooks/usePaginatedList';
+import { resolveAssetUrl } from '../../utils/assetUrl';
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -36,7 +37,7 @@ function FeedCard({
     <View className="w-60 rounded-2xl bg-cardBackground p-4">
       {imageUrl ? (
         <Image
-          source={{ uri: imageUrl }}
+          source={{ uri: resolveAssetUrl(imageUrl) ?? undefined }}
           style={{ height: 96, width: '100%', borderRadius: 16, marginBottom: 12 }}
           contentFit="cover"
           cachePolicy="memory-disk"

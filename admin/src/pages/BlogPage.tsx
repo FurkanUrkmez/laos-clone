@@ -9,6 +9,7 @@ import {
   updateBlogPostRequest,
 } from '../api/blogPosts';
 import { getApiErrorMessage } from '../api/errorMessage';
+import { resolveAssetUrl } from '../api/assetUrl';
 import { ImageUploadField } from '../components/ImageUploadField';
 import type { BlogPost } from '../types';
 
@@ -129,7 +130,11 @@ export function BlogPage() {
         posts.map((post) => (
           <div key={post.id} className="card">
             {post.coverImageUrl && (
-              <img src={post.coverImageUrl} alt="" style={{ maxWidth: 160, borderRadius: 8, marginBottom: 8 }} />
+              <img
+                src={resolveAssetUrl(post.coverImageUrl) ?? undefined}
+                alt=""
+                style={{ maxWidth: 160, borderRadius: 8, marginBottom: 8 }}
+              />
             )}
             <strong>{post.title}</strong> {post.isPublished ? '(yayında)' : '(taslak)'}
             <p>/{post.slug}</p>

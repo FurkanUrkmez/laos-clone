@@ -9,6 +9,7 @@ import {
   updateProductRequest,
 } from '../api/products';
 import { getApiErrorMessage } from '../api/errorMessage';
+import { resolveAssetUrl } from '../api/assetUrl';
 import { ImageUploadField } from '../components/ImageUploadField';
 import type { Product } from '../types';
 
@@ -179,7 +180,11 @@ export function ProductsPage() {
         products.map((product) => (
           <div key={product.id} className="card">
             {product.imageUrl && (
-              <img src={product.imageUrl} alt="" style={{ maxWidth: 120, borderRadius: 8, marginBottom: 8 }} />
+              <img
+                src={resolveAssetUrl(product.imageUrl) ?? undefined}
+                alt=""
+                style={{ maxWidth: 120, borderRadius: 8, marginBottom: 8 }}
+              />
             )}
             <strong>{product.name}</strong> {product.isActive ? '' : '(pasif)'}
             <p>

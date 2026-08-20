@@ -19,7 +19,11 @@ export function upload(req: AdminAuthenticatedRequest, res: Response, next: Next
       next(new AppError(400, 'Geçerli bir resim dosyası gerekli (jpg, png veya webp)'));
       return;
     }
-    const url = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-    res.status(201).json({ url });
+    // A relative path (not an absolute URL) so each client resolves it
+    // against its own configured API host — the admin panel and the
+    // mobile app talk to the server on different hosts (localhost vs. the
+    // machine's LAN IP), and baking in whichever host performed the
+    // upload would break image loading for the other client.
+    res.status(201).json({ url: `/uploads/${req.file.filename}` });
   });
 }
