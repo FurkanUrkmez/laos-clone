@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Pressable, Text, View } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ScreenContainer } from '../../components/ScreenContainer';
+import type { MainStackParamList } from '../../navigation/MainNavigator';
 import { CoffeeProgress } from '../../components/CoffeeProgress';
 import { Button } from '../../components/Button';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -27,14 +30,17 @@ function FeedCard({
   fallbackIcon,
   title,
   description,
+  onPress,
 }: {
   imageUrl: string | null;
   fallbackIcon: React.ComponentProps<typeof Ionicons>['name'];
   title: string;
   description: string;
+  onPress?: () => void;
 }) {
+  const Container = onPress ? Pressable : View;
   return (
-    <View className="w-60 rounded-2xl bg-cardBackground p-4">
+    <Container onPress={onPress} className="w-60 rounded-2xl bg-cardBackground p-4">
       {imageUrl ? (
         <Image
           source={{ uri: resolveAssetUrl(imageUrl) ?? undefined }}
@@ -54,7 +60,7 @@ function FeedCard({
       <Text className="mt-1 text-sm text-textSecondary" numberOfLines={2}>
         {description}
       </Text>
-    </View>
+    </Container>
   );
 }
 
@@ -68,6 +74,7 @@ function LoadMoreFooter({ loading }: { loading: boolean }) {
 }
 
 export function HomeScreen() {
+  const navigation = useNavigation();
   const user = useAuthStore((state) => state.user);
   const greeting = useMemo(getGreeting, []);
   const firstName = user?.fullName?.split(' ')[0] ?? '';
@@ -166,6 +173,11 @@ export function HomeScreen() {
             fallbackIcon="book-outline"
             title={item.title}
             description={item.excerpt}
+            onPress={() =>
+              navigation
+                .getParent<NativeStackNavigationProp<MainStackParamList>>()
+                ?.navigate('BlogDetail', { postId: item.id })
+            }
           />
         )}
       />

@@ -14,7 +14,8 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { prisma } from '../lib/prisma';
 import { listActiveCampaigns } from './campaigns.service';
-import { listPublishedBlogPosts } from './blog.service';
+import { getPublishedBlogPost, listPublishedBlogPosts } from './blog.service';
+import { AppError } from '../utils/AppError';
 
 describe('customer-facing campaigns and blog listings', () => {
   let businessId: string;
@@ -110,5 +111,19 @@ describe('customer-facing campaigns and blog listings', () => {
     const page2 = await listPublishedBlogPosts(businessId, { page: 2, limit: 2 });
     expect(page2.hasMore).toBe(false);
     expect(page2.items).toHaveLength(1);
+  });
+
+  it('returns the full content for a published post by id', async () => {
+    const published = await prisma.blogPost.findFirstOrThrow({
+      where: { businessId, slug: 'published-post' },
+    });
+
+    const post = await getPublishedBlogPost(businessId, published.id);
+    expect(post.content).toBe('This post is published.');
+  });
+
+  it('rejects an unpublished post id', async () => {
+    const draft = await prisma.blogPost.findFirstOrThrow({ where: { businessId, slug: 'draft-post' } });
+    await expect(getPublishedBlogPost(businessId, draft.id)).rejects.toBeInstanceOf(AppError);
   });
 });

@@ -1,4 +1,5 @@
 import { prisma } from '../lib/prisma';
+import { AppError } from '../utils/AppError';
 import type { PaginationQuery } from '../validators/pagination.validators';
 
 const EXCERPT_LENGTH = 160;
@@ -25,4 +26,12 @@ export async function listPublishedBlogPosts(businessId: string, { page, limit }
     excerpt: toExcerpt(content),
   }));
   return { items, hasMore };
+}
+
+export async function getPublishedBlogPost(businessId: string, id: string) {
+  const post = await prisma.blogPost.findFirst({ where: { id, businessId, isPublished: true } });
+  if (!post) {
+    throw new AppError(404, 'Blog yazısı bulunamadı');
+  }
+  return post;
 }

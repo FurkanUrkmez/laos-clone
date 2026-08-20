@@ -12,3 +12,12 @@ export async function list(req: AuthenticatedRequest, res: Response, next: NextF
     next(err);
   }
 }
+
+export async function show(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  try {
+    const post = await blogService.getPublishedBlogPost(req.auth!.businessId, req.params.id as string);
+    res.status(200).json({ post });
+  } catch (err) {
+    next(err);
+  }
+}

@@ -5,3 +5,4 @@ import { authenticate } from '../middleware/auth';
 export const blogRouter = Router();
 
 blogRouter.get('/', authenticate, blogController.list);
+blogRouter.get('/:id', authenticate, blogController.show);
