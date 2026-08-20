@@ -14,6 +14,7 @@ import { ImageUploadField } from '../components/ImageUploadField';
 import { Button } from '../components/Button';
 import { Badge } from '../components/Badge';
 import { FormField } from '../components/FormField';
+import { CheckboxField } from '../components/CheckboxField';
 import type { Product } from '../types';
 
 const emptyForm: ProductInput = {
@@ -140,24 +141,16 @@ export function ProductsPage() {
           value={form.imageUrl}
           onChange={(url) => setForm({ ...form, imageUrl: url })}
         />
-        <label>
-          <input
-            type="checkbox"
-            checked={form.redeemable}
-            onChange={(e) => setForm({ ...form, redeemable: e.target.checked })}
-            style={{ width: 'auto', display: 'inline-block', marginRight: 8 }}
-          />
-          Puanla alınabilir (ödül olarak verilebilir)
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={form.isActive}
-            onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-            style={{ width: 'auto', display: 'inline-block', marginRight: 8 }}
-          />
-          Aktif
-        </label>
+        <CheckboxField
+          label="Puanla alınabilir (ödül olarak verilebilir)"
+          checked={form.redeemable ?? true}
+          onChange={(checked) => setForm({ ...form, redeemable: checked })}
+        />
+        <CheckboxField
+          label="Aktif"
+          checked={form.isActive ?? true}
+          onChange={(checked) => setForm({ ...form, isActive: checked })}
+        />
         <div className="row-actions">
           <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
             {editingId ? 'Güncelle' : 'Ekle'}

@@ -12,7 +12,7 @@ export function CustomersPage() {
   }
 
   return (
-    <div>
+    <div className="card">
       <table>
         <thead>
           <tr>
