@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { prisma } from '../lib/prisma';
 import { AppError } from '../utils/AppError';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt';
+import { generateUniqueLoyaltyCode } from '../utils/loyaltyCode';
 import type { User } from '../generated/prisma/client';
 import type { LoginInput, RegisterInput } from '../validators/auth.validators';
 
@@ -31,6 +32,7 @@ export async function registerUser(input: RegisterInput) {
 
   const businessId = await getSingleBusinessId();
   const passwordHash = await bcrypt.hash(input.password, SALT_ROUNDS);
+  const loyaltyCode = await generateUniqueLoyaltyCode();
 
   const user = await prisma.user.create({
     data: {
@@ -40,6 +42,7 @@ export async function registerUser(input: RegisterInput) {
       passwordHash,
       phone: input.phone,
       gender: input.gender ?? 'UNSPECIFIED',
+      loyaltyCode,
       balance: { create: { balance: 0 } },
     },
   });

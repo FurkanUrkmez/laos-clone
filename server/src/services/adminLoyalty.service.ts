@@ -37,8 +37,22 @@ async function requireBusinessUser(client: PrismaClientOrTx, businessId: string,
   return user;
 }
 
+async function resolveUserId(businessId: string, input: ScanInput): Promise<string> {
+  if (input.loyaltyCode) {
+    const user = await prisma.user.findFirst({
+      where: { businessId, loyaltyCode: input.loyaltyCode },
+      select: { id: true },
+    });
+    if (!user) {
+      throw new AppError(404, 'Bu koda kayıtlı müşteri bulunamadı');
+    }
+    return user.id;
+  }
+  return parseUserIdFromQrValue(input.qrValue!);
+}
+
 export async function scanProduct(businessId: string, input: ScanInput) {
-  const userId = parseUserIdFromQrValue(input.qrValue);
+  const userId = await resolveUserId(businessId, input);
   await requireBusinessUser(prisma, businessId, userId);
 
   const product = await prisma.product.findFirst({
@@ -81,6 +95,16 @@ export async function redeemReward(businessId: string, input: RedeemInput) {
 
     await requireBusinessUser(tx, businessId, input.userId);
 
+    let product = null;
+    if (input.productId) {
+      product = await tx.product.findFirst({
+        where: { id: input.productId, businessId, isActive: true, redeemable: true },
+      });
+      if (!product) {
+        throw new AppError(400, 'Bu ürün ödül olarak verilemez');
+      }
+    }
+
     const business = await tx.business.findUniqueOrThrow({ where: { id: businessId } });
     const sums = await getUserPointsSums(tx, businessId, input.userId);
     const currentBalance = getPointsBalance(sums.earn, sums.redeem);
@@ -90,9 +114,10 @@ export async function redeemReward(businessId: string, input: RedeemInput) {
       data: {
         userId: input.userId,
         businessId,
+        productId: product?.id,
         points: business.loyaltyTargetCups,
         type: 'REDEEM',
-        note: 'Ücretsiz ürün verildi',
+        note: product ? `Ücretsiz ürün verildi: ${product.name}` : 'Ücretsiz ürün verildi',
       },
     });
 

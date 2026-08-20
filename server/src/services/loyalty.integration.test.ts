@@ -44,6 +44,7 @@ describe('getMyLoyalty', () => {
         email: `loyalty-test-user-${Date.now()}@example.com`,
         passwordHash: 'not-a-real-hash',
         phone: '+900000000001',
+        loyaltyCode: `${Date.now()}`.slice(-6),
       },
     });
     userId = user.id;

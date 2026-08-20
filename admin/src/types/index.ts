@@ -48,6 +48,7 @@ export interface Customer {
   fullName: string;
   email: string;
   phone: string;
+  loyaltyCode: string;
   pointsBalance: number;
   createdAt: string;
 }
@@ -55,11 +56,14 @@ export interface Customer {
 export interface Product {
   id: string;
   categoryId: string;
+  categoryName: string;
   name: string;
   description: string | null;
+  imageUrl: string | null;
   pointsReward: number;
   price: string;
   isActive: boolean;
+  redeemable: boolean;
 }
 
 export interface ScanResult {

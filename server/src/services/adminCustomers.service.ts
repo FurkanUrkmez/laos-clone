@@ -29,6 +29,7 @@ export async function listCustomers(businessId: string) {
       fullName: user.fullName,
       email: user.email,
       phone: user.phone,
+      loyaltyCode: user.loyaltyCode,
       pointsBalance: getPointsBalance(entry.earn, entry.redeem),
       createdAt: user.createdAt,
     };

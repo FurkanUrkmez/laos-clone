@@ -20,6 +20,7 @@ export function CustomersPage() {
             <th>Ad Soyad</th>
             <th>E-posta</th>
             <th>Telefon</th>
+            <th>Kod</th>
             <th>Puan</th>
           </tr>
         </thead>
@@ -29,6 +30,7 @@ export function CustomersPage() {
               <td>{customer.fullName}</td>
               <td>{customer.email}</td>
               <td>{customer.phone}</td>
+              <td>{customer.loyaltyCode}</td>
               <td>{customer.pointsBalance}</td>
             </tr>
           ))}

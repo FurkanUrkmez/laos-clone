@@ -28,6 +28,14 @@ export function QrCodeScreen() {
         <Text className="mt-1 text-center text-sm text-cream">
           Kodunu kasada okutarak puan kazan
         </Text>
+        {user?.loyaltyCode && (
+          <View className="mt-4 items-center rounded-2xl bg-white/10 px-5 py-2">
+            <Text className="text-xs text-cream">Kamera çalışmıyorsa bu kodu söyle</Text>
+            <Text className="mt-1 text-2xl font-bold tracking-[6px] text-white">
+              {user.loyaltyCode}
+            </Text>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );

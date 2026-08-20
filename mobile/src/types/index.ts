@@ -12,6 +12,7 @@ export interface User {
   phoneVerified: boolean;
   gender: string | null;
   avatarUrl: string | null;
+  loyaltyCode: string;
   createdAt: string;
   updatedAt: string;
 }
