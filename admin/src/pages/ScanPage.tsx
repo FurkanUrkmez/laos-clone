@@ -4,6 +4,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { listProductsRequest } from '../api/products';
 import { redeemRequest, scanRequest } from '../api/loyalty';
 import { getApiErrorMessage } from '../api/errorMessage';
+import { Button } from '../components/Button';
+import { FormField } from '../components/FormField';
 import type { ScanResult } from '../types';
 
 const SCANNER_ELEMENT_ID = 'qr-scanner-region';
@@ -125,8 +127,7 @@ export function ScanPage() {
   return (
     <div>
       <div className="card" style={{ maxWidth: 480 }}>
-        <label>
-          Ürün
+        <FormField label="Ürün">
           <select value={productId} onChange={(e) => setProductId(e.target.value)}>
             <option value="">Ürün seçin</option>
             {products.map((product) => (
@@ -135,7 +136,7 @@ export function ScanPage() {
               </option>
             ))}
           </select>
-        </label>
+        </FormField>
       </div>
 
       <div className="card" style={{ maxWidth: 480 }}>
@@ -144,48 +145,46 @@ export function ScanPage() {
         ) : (
           <p>Kamera kullanılamıyor, QR metnini veya müşteri kodunu elle girin.</p>
         )}
-        <label>
-          Manuel QR Metni
+        <FormField label="Manuel QR Metni">
           <input value={manualQrValue} onChange={(e) => setManualQrValue(e.target.value)} placeholder="laos-clone:user:..." />
-        </label>
-        <button
+        </FormField>
+        <Button
           type="button"
           onClick={() => handleAddPoints({ type: 'qr', value: manualQrValue })}
           disabled={!manualQrValue}
         >
           Puan Ekle
-        </button>
+        </Button>
       </div>
 
       <div className="card" style={{ maxWidth: 480 }}>
-        <label>
-          6 Haneli Müşteri Kodu
+        <FormField label="6 Haneli Müşteri Kodu">
           <input
             value={manualCode}
             onChange={(e) => setManualCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
             placeholder="123456"
             inputMode="numeric"
           />
-        </label>
-        <button
+        </FormField>
+        <Button
           type="button"
           onClick={() => handleAddPoints({ type: 'code', value: manualCode })}
           disabled={manualCode.length !== 6}
         >
           Puan Ekle
-        </button>
+        </Button>
       </div>
 
       {scannedQrValue && (
         <div className="card" style={{ maxWidth: 480 }}>
           <p>Okunan kod: {scannedQrValue}</p>
-          <button
+          <Button
             type="button"
             onClick={() => handleAddPoints({ type: 'qr', value: scannedQrValue })}
             disabled={scanMutation.isPending}
           >
             Puan Ekle
-          </button>
+          </Button>
         </div>
       )}
 
@@ -199,8 +198,7 @@ export function ScanPage() {
           {redeemableUserId && (
             <>
               {redeemableProducts.length > 0 && (
-                <label>
-                  Ödül Ürünü
+                <FormField label="Ödül Ürünü">
                   <select value={rewardProductId} onChange={(e) => setRewardProductId(e.target.value)}>
                     <option value="">Ürün seçin</option>
                     {redeemableProducts.map((product) => (
@@ -209,15 +207,15 @@ export function ScanPage() {
                       </option>
                     ))}
                   </select>
-                </label>
+                </FormField>
               )}
-              <button
+              <Button
                 type="button"
                 onClick={() => redeemMutation.mutate(redeemableUserId)}
                 disabled={redeemMutation.isPending || (redeemableProducts.length > 0 && !rewardProductId)}
               >
                 Ücretsiz Ürün Ver
-              </button>
+              </Button>
             </>
           )}
         </div>
