@@ -6,6 +6,7 @@ const links = [
   { to: '/campaigns', label: 'Kampanyalar' },
   { to: '/blog', label: 'Blog' },
   { to: '/customers', label: 'Müşteriler' },
+  { to: '/products', label: 'Ürünler' },
   { to: '/scan', label: 'QR Tarayıcı' },
 ];
 

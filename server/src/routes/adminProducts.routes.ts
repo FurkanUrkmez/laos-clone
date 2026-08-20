@@ -6,3 +6,6 @@ export const adminProductsRouter = Router();
 
 adminProductsRouter.use(authenticateAdmin);
 adminProductsRouter.get('/', adminProductsController.list);
+adminProductsRouter.post('/', adminProductsController.create);
+adminProductsRouter.patch('/:id', adminProductsController.update);
+adminProductsRouter.delete('/:id', adminProductsController.remove);

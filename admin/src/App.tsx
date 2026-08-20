@@ -4,6 +4,7 @@ import { BusinessPage } from './pages/BusinessPage';
 import { CampaignsPage } from './pages/CampaignsPage';
 import { BlogPage } from './pages/BlogPage';
 import { CustomersPage } from './pages/CustomersPage';
+import { ProductsPage } from './pages/ProductsPage';
 import { ScanPage } from './pages/ScanPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
@@ -19,6 +20,7 @@ export function App() {
           <Route path="campaigns" element={<CampaignsPage />} />
           <Route path="blog" element={<BlogPage />} />
           <Route path="customers" element={<CustomersPage />} />
+          <Route path="products" element={<ProductsPage />} />
           <Route path="scan" element={<ScanPage />} />
         </Route>
       </Route>
