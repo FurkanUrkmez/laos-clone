@@ -11,6 +11,10 @@ import {
 import { getApiErrorMessage } from '../api/errorMessage';
 import { resolveAssetUrl } from '../api/assetUrl';
 import { ImageUploadField } from '../components/ImageUploadField';
+import { Button } from '../components/Button';
+import { Badge } from '../components/Badge';
+import { CheckboxField } from '../components/CheckboxField';
+import { FormField } from '../components/FormField';
 import type { BlogPost } from '../types';
 
 const emptyForm: BlogPostInput = { title: '', content: '', coverImageUrl: undefined, isPublished: false };
@@ -83,41 +87,35 @@ export function BlogPage() {
   return (
     <div>
       <form className="card" onSubmit={handleSubmit} style={{ maxWidth: 480 }}>
-        <label>
-          Başlık
+        <FormField label="Başlık">
           <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
-        </label>
-        <label>
-          İçerik
+        </FormField>
+        <FormField label="İçerik">
           <textarea
             rows={6}
             value={form.content}
             onChange={(e) => setForm({ ...form, content: e.target.value })}
             required
           />
-        </label>
+        </FormField>
         <ImageUploadField
           label="Kapak Görseli"
           value={form.coverImageUrl}
           onChange={(url) => setForm({ ...form, coverImageUrl: url })}
         />
-        <label>
-          <input
-            type="checkbox"
-            checked={form.isPublished}
-            onChange={(e) => setForm({ ...form, isPublished: e.target.checked })}
-            style={{ width: 'auto', display: 'inline-block', marginRight: 8 }}
-          />
-          Yayınla
-        </label>
+        <CheckboxField
+          label="Yayınla"
+          checked={form.isPublished ?? false}
+          onChange={(checked) => setForm({ ...form, isPublished: checked })}
+        />
         <div className="row-actions">
-          <button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
+          <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
             {editingId ? 'Güncelle' : 'Ekle'}
-          </button>
+          </Button>
           {editingId && (
-            <button type="button" onClick={cancelEdit}>
+            <Button type="button" variant="ghost" onClick={cancelEdit}>
               Vazgeç
-            </button>
+            </Button>
           )}
         </div>
         {error && <p className="error-text">{error}</p>}
@@ -135,15 +133,18 @@ export function BlogPage() {
                 style={{ maxWidth: 160, borderRadius: 8, marginBottom: 8 }}
               />
             )}
-            <strong>{post.title}</strong> {post.isPublished ? '(yayında)' : '(taslak)'}
+            <strong>{post.title}</strong>
+            <Badge tone={post.isPublished ? 'accent' : 'neutral'}>
+              {post.isPublished ? 'Yayında' : 'Taslak'}
+            </Badge>
             <p>/{post.slug}</p>
             <div className="row-actions">
-              <button type="button" onClick={() => startEdit(post)}>
+              <Button type="button" variant="ghost" onClick={() => startEdit(post)}>
                 Düzenle
-              </button>
-              <button type="button" onClick={() => deleteMutation.mutate(post.id)}>
+              </Button>
+              <Button type="button" variant="danger" onClick={() => deleteMutation.mutate(post.id)}>
                 Sil
-              </button>
+              </Button>
             </div>
           </div>
         ))
