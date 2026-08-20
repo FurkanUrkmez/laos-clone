@@ -9,9 +9,10 @@ import {
   updateBlogPostRequest,
 } from '../api/blogPosts';
 import { getApiErrorMessage } from '../api/errorMessage';
+import { ImageUploadField } from '../components/ImageUploadField';
 import type { BlogPost } from '../types';
 
-const emptyForm: BlogPostInput = { title: '', content: '', isPublished: false };
+const emptyForm: BlogPostInput = { title: '', content: '', coverImageUrl: undefined, isPublished: false };
 
 export function BlogPage() {
   const queryClient = useQueryClient();
@@ -65,7 +66,12 @@ export function BlogPage() {
 
   function startEdit(post: BlogPost) {
     setEditingId(post.id);
-    setForm({ title: post.title, content: post.content, isPublished: post.isPublished });
+    setForm({
+      title: post.title,
+      content: post.content,
+      coverImageUrl: post.coverImageUrl ?? undefined,
+      isPublished: post.isPublished,
+    });
   }
 
   function cancelEdit() {
@@ -90,6 +96,11 @@ export function BlogPage() {
             required
           />
         </label>
+        <ImageUploadField
+          label="Kapak Görseli"
+          value={form.coverImageUrl}
+          onChange={(url) => setForm({ ...form, coverImageUrl: url })}
+        />
         <label>
           <input
             type="checkbox"
@@ -117,6 +128,9 @@ export function BlogPage() {
       ) : (
         posts.map((post) => (
           <div key={post.id} className="card">
+            {post.coverImageUrl && (
+              <img src={post.coverImageUrl} alt="" style={{ maxWidth: 160, borderRadius: 8, marginBottom: 8 }} />
+            )}
             <strong>{post.title}</strong> {post.isPublished ? '(yayında)' : '(taslak)'}
             <p>/{post.slug}</p>
             <div className="row-actions">

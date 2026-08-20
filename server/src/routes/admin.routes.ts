@@ -6,6 +6,7 @@ import { adminBlogPostsRouter } from './adminBlogPosts.routes';
 import { adminCustomersRouter } from './adminCustomers.routes';
 import { adminProductsRouter } from './adminProducts.routes';
 import { adminLoyaltyRouter } from './adminLoyalty.routes';
+import { adminUploadsRouter } from './adminUploads.routes';
 
 export const adminRouter = Router();
 
@@ -16,3 +17,4 @@ adminRouter.use('/blog-posts', adminBlogPostsRouter);
 adminRouter.use('/customers', adminCustomersRouter);
 adminRouter.use('/products', adminProductsRouter);
 adminRouter.use('/loyalty', adminLoyaltyRouter);
+adminRouter.use('/uploads', adminUploadsRouter);

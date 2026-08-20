@@ -12,6 +12,10 @@ mobile/.expo/
 # Prisma generated client
 server/src/generated/
 
+# Uploaded images (local disk storage)
+server/uploads/*
+!server/uploads/.gitkeep
+
 # OS
 .DS_Store
 Thumbs.db

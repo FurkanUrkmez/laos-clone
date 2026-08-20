@@ -9,6 +9,7 @@ import {
   updateCampaignRequest,
 } from '../api/campaigns';
 import { getApiErrorMessage } from '../api/errorMessage';
+import { ImageUploadField } from '../components/ImageUploadField';
 import type { Campaign } from '../types';
 
 const emptyForm: CampaignInput = { title: '', description: '', startDate: '', endDate: '', isActive: true };
@@ -71,6 +72,7 @@ export function CampaignsPage() {
     setForm({
       title: campaign.title,
       description: campaign.description ?? '',
+      imageUrl: campaign.imageUrl ?? undefined,
       startDate: campaign.startDate.slice(0, 10),
       endDate: campaign.endDate.slice(0, 10),
       isActive: campaign.isActive,
@@ -106,6 +108,11 @@ export function CampaignsPage() {
             required
           />
         </label>
+        <ImageUploadField
+          label="Kampanya Görseli"
+          value={form.imageUrl}
+          onChange={(url) => setForm({ ...form, imageUrl: url })}
+        />
         <label>
           Bitiş Tarihi
           <input
@@ -142,6 +149,9 @@ export function CampaignsPage() {
       ) : (
         campaigns.map((campaign) => (
           <div key={campaign.id} className="card">
+            {campaign.imageUrl && (
+              <img src={campaign.imageUrl} alt="" style={{ maxWidth: 160, borderRadius: 8, marginBottom: 8 }} />
+            )}
             <strong>{campaign.title}</strong> {campaign.isActive ? '' : '(pasif)'}
             <p>{campaign.description}</p>
             <p>
