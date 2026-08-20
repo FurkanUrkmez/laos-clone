@@ -11,6 +11,10 @@ import {
 import { getApiErrorMessage } from '../api/errorMessage';
 import { resolveAssetUrl } from '../api/assetUrl';
 import { ImageUploadField } from '../components/ImageUploadField';
+import { Button } from '../components/Button';
+import { Badge } from '../components/Badge';
+import { CheckboxField } from '../components/CheckboxField';
+import { FormField } from '../components/FormField';
 import type { Campaign } from '../types';
 
 const emptyForm: CampaignInput = { title: '', description: '', startDate: '', endDate: '', isActive: true };
@@ -88,57 +92,49 @@ export function CampaignsPage() {
   return (
     <div>
       <form className="card" onSubmit={handleSubmit} style={{ maxWidth: 480 }}>
-        <label>
-          Başlık
+        <FormField label="Başlık">
           <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
-        </label>
-        <label>
-          Açıklama
+        </FormField>
+        <FormField label="Açıklama">
           <textarea
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
           />
-        </label>
-        <label>
-          Başlangıç Tarihi
+        </FormField>
+        <FormField label="Başlangıç Tarihi">
           <input
             type="date"
             value={form.startDate}
             onChange={(e) => setForm({ ...form, startDate: e.target.value })}
             required
           />
-        </label>
+        </FormField>
         <ImageUploadField
           label="Kampanya Görseli"
           value={form.imageUrl}
           onChange={(url) => setForm({ ...form, imageUrl: url })}
         />
-        <label>
-          Bitiş Tarihi
+        <FormField label="Bitiş Tarihi">
           <input
             type="date"
             value={form.endDate}
             onChange={(e) => setForm({ ...form, endDate: e.target.value })}
             required
           />
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={form.isActive}
-            onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-            style={{ width: 'auto', display: 'inline-block', marginRight: 8 }}
-          />
-          Aktif
-        </label>
+        </FormField>
+        <CheckboxField
+          label="Aktif"
+          checked={form.isActive ?? true}
+          onChange={(checked) => setForm({ ...form, isActive: checked })}
+        />
         <div className="row-actions">
-          <button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
+          <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
             {editingId ? 'Güncelle' : 'Ekle'}
-          </button>
+          </Button>
           {editingId && (
-            <button type="button" onClick={cancelEdit}>
+            <Button type="button" variant="ghost" onClick={cancelEdit}>
               Vazgeç
-            </button>
+            </Button>
           )}
         </div>
         {error && <p className="error-text">{error}</p>}
@@ -156,18 +152,19 @@ export function CampaignsPage() {
                 style={{ maxWidth: 160, borderRadius: 8, marginBottom: 8 }}
               />
             )}
-            <strong>{campaign.title}</strong> {campaign.isActive ? '' : '(pasif)'}
+            <strong>{campaign.title}</strong>
+            {!campaign.isActive && <Badge tone="danger">Pasif</Badge>}
             <p>{campaign.description}</p>
             <p>
               {campaign.startDate.slice(0, 10)} — {campaign.endDate.slice(0, 10)}
             </p>
             <div className="row-actions">
-              <button type="button" onClick={() => startEdit(campaign)}>
+              <Button type="button" variant="ghost" onClick={() => startEdit(campaign)}>
                 Düzenle
-              </button>
-              <button type="button" onClick={() => deleteMutation.mutate(campaign.id)}>
+              </Button>
+              <Button type="button" variant="danger" onClick={() => deleteMutation.mutate(campaign.id)}>
                 Sil
-              </button>
+              </Button>
             </div>
           </div>
         ))
