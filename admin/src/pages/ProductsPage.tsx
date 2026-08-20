@@ -11,6 +11,9 @@ import {
 import { getApiErrorMessage } from '../api/errorMessage';
 import { resolveAssetUrl } from '../api/assetUrl';
 import { ImageUploadField } from '../components/ImageUploadField';
+import { Button } from '../components/Button';
+import { Badge } from '../components/Badge';
+import { FormField } from '../components/FormField';
 import type { Product } from '../types';
 
 const emptyForm: ProductInput = {
@@ -94,30 +97,25 @@ export function ProductsPage() {
 
   return (
     <div>
-      <h2>Ürünler</h2>
       <form className="card" onSubmit={handleSubmit} style={{ maxWidth: 480 }}>
-        <label>
-          Ürün Adı
+        <FormField label="Ürün Adı">
           <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
-        </label>
-        <label>
-          Açıklama
+        </FormField>
+        <FormField label="Açıklama">
           <textarea
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
           />
-        </label>
-        <label>
-          Kategori
+        </FormField>
+        <FormField label="Kategori">
           <input
             value={form.categoryName}
             onChange={(e) => setForm({ ...form, categoryName: e.target.value })}
             placeholder="Örn. Espresso Sıcak"
             required
           />
-        </label>
-        <label>
-          Fiyat (₺)
+        </FormField>
+        <FormField label="Fiyat (₺)">
           <input
             type="number"
             min="0"
@@ -126,9 +124,8 @@ export function ProductsPage() {
             onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
             required
           />
-        </label>
-        <label>
-          Kazandırdığı Puan
+        </FormField>
+        <FormField label="Kazandırdığı Puan">
           <input
             type="number"
             min="0"
@@ -137,7 +134,7 @@ export function ProductsPage() {
             onChange={(e) => setForm({ ...form, pointsReward: Number(e.target.value) })}
             required
           />
-        </label>
+        </FormField>
         <ImageUploadField
           label="Ürün Görseli"
           value={form.imageUrl}
@@ -162,13 +159,13 @@ export function ProductsPage() {
           Aktif
         </label>
         <div className="row-actions">
-          <button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
+          <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
             {editingId ? 'Güncelle' : 'Ekle'}
-          </button>
+          </Button>
           {editingId && (
-            <button type="button" onClick={cancelEdit}>
+            <Button type="button" variant="ghost" onClick={cancelEdit}>
               Vazgeç
-            </button>
+            </Button>
           )}
         </div>
         {error && <p className="error-text">{error}</p>}
@@ -186,19 +183,20 @@ export function ProductsPage() {
                 style={{ maxWidth: 120, borderRadius: 8, marginBottom: 8 }}
               />
             )}
-            <strong>{product.name}</strong> {product.isActive ? '' : '(pasif)'}
+            <strong>{product.name}</strong>
+            {!product.isActive && <Badge tone="danger">Pasif</Badge>}
+            {!product.redeemable && <Badge tone="neutral">Ödül olarak verilemez</Badge>}
             <p>
               {product.categoryName} — {product.price}₺ — +{product.pointsReward} puan
-              {!product.redeemable && ' — ödül olarak verilemez'}
             </p>
             {product.description && <p>{product.description}</p>}
             <div className="row-actions">
-              <button type="button" onClick={() => startEdit(product)}>
+              <Button type="button" variant="ghost" onClick={() => startEdit(product)}>
                 Düzenle
-              </button>
-              <button type="button" onClick={() => deleteMutation.mutate(product.id)}>
+              </Button>
+              <Button type="button" variant="danger" onClick={() => deleteMutation.mutate(product.id)}>
                 Sil
-              </button>
+              </Button>
             </div>
           </div>
         ))

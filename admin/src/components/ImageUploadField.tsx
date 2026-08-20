@@ -31,8 +31,8 @@ export function ImageUploadField({ label, value, onChange }: ImageUploadFieldPro
   }
 
   return (
-    <label>
-      {label}
+    <label className="field">
+      <span className="field-label">{label}</span>
       {value && (
         <img
           src={resolveAssetUrl(value) ?? undefined}
@@ -41,7 +41,7 @@ export function ImageUploadField({ label, value, onChange }: ImageUploadFieldPro
         />
       )}
       <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFileChange} disabled={uploading} />
-      {uploading && <p>Yükleniyor…</p>}
+      {uploading && <p style={{ color: 'var(--color-text-secondary)', fontSize: 13 }}>Yükleniyor…</p>}
       {error && <p className="error-text">{error}</p>}
     </label>
   );
