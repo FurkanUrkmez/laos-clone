@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-type BadgeTone = 'neutral' | 'danger';
+type BadgeTone = 'neutral' | 'danger' | 'accent';
 
 interface BadgeProps {
   tone?: BadgeTone;

@@ -242,6 +242,11 @@ td {
   color: var(--color-danger);
 }
 
+.badge-accent {
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  color: var(--color-accent);
+}
+
 /* Stat cards */
 .stats-row {
   display: flex;
