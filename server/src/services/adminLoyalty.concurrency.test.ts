@@ -16,6 +16,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { prisma } from '../lib/prisma';
 import { redeemReward } from './adminLoyalty.service';
+import { generateUniqueLoyaltyCode } from '../utils/loyaltyCode';
 import { AppError } from '../utils/AppError';
 
 const REWARD_THRESHOLD = 3;
@@ -45,7 +46,7 @@ describe('redeemReward concurrency', () => {
         email: `concurrency-test-user-${Date.now()}@example.com`,
         passwordHash: 'not-a-real-hash',
         phone: '+900000000001',
-        loyaltyCode: `${Date.now()}`.slice(-6),
+        loyaltyCode: await generateUniqueLoyaltyCode(),
       },
     });
     userId = user.id;

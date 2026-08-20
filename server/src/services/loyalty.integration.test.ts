@@ -16,6 +16,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { prisma } from '../lib/prisma';
 import { getMyLoyalty } from './loyalty.service';
+import { generateUniqueLoyaltyCode } from '../utils/loyaltyCode';
 
 const REWARD_THRESHOLD = 7;
 
@@ -44,7 +45,7 @@ describe('getMyLoyalty', () => {
         email: `loyalty-test-user-${Date.now()}@example.com`,
         passwordHash: 'not-a-real-hash',
         phone: '+900000000001',
-        loyaltyCode: `${Date.now()}`.slice(-6),
+        loyaltyCode: await generateUniqueLoyaltyCode(),
       },
     });
     userId = user.id;
