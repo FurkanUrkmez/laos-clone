@@ -153,6 +153,11 @@ export function HomeScreen() {
             fallbackIcon="pricetag-outline"
             title={item.title}
             description={item.description ?? ''}
+            onPress={() =>
+              navigation
+                .getParent<NativeStackNavigationProp<MainStackParamList>>()
+                ?.navigate('CampaignDetail', { campaign: item })
+            }
           />
         )}
       />
