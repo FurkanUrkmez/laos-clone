@@ -1,3 +1,18 @@
+:root {
+  --color-bg: #171310;
+  --color-sidebar: #0F0B08;
+  --color-card: #211A15;
+  --color-border: #322718;
+  --color-accent: #D9A566;
+  --color-text-primary: #EFE6DA;
+  --color-text-secondary: #6B5C4E;
+  --color-text-muted: #3A2E20;
+  --color-danger: #E5484D;
+
+  --radius: 10px;
+  --radius-full: 999px;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -5,8 +20,8 @@
 body {
   margin: 0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  background: #f5f2ef;
-  color: #2b1c12;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
 }
 
 .app-shell {
@@ -16,29 +31,74 @@ body {
 
 .sidebar {
   width: 220px;
-  background: #2b1c12;
-  color: #f5f2ef;
+  background: var(--color-sidebar);
+  color: var(--color-text-primary);
   padding: 24px 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  border-right: 1px solid var(--color-border);
 }
 
 .sidebar h1 {
   font-size: 18px;
   margin: 0 0 24px;
+  color: var(--color-accent);
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
 }
 
 .sidebar a {
-  color: #f5f2ef;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text-secondary);
   text-decoration: none;
   padding: 8px 12px;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-size: 14px;
 }
 
 .sidebar a.active,
 .sidebar a:hover {
-  background: #6b3e26;
+  background: var(--color-card);
+  color: var(--color-text-primary);
+}
+
+.sidebar a.active {
+  color: var(--color-accent);
+}
+
+.main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topbar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.topbar h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.topbar-account {
+  font-size: 13px;
+  color: var(--color-text-secondary);
 }
 
 .content {
@@ -57,9 +117,9 @@ body {
 .login-card {
   width: 320px;
   padding: 32px;
-  border-radius: 12px;
-  background: white;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius);
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
 }
 
 input,
@@ -69,9 +129,16 @@ select {
   padding: 8px 10px;
   margin-top: 4px;
   margin-bottom: 12px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   font-size: 14px;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-secondary);
 }
 
 button {
@@ -79,9 +146,10 @@ button {
   border: none;
   border-radius: 6px;
   padding: 8px 16px;
-  background: #6b3e26;
-  color: white;
+  background: var(--color-accent);
+  color: var(--color-sidebar);
   font-size: 14px;
+  font-weight: 600;
 }
 
 button:disabled {
@@ -98,24 +166,127 @@ th,
 td {
   text-align: left;
   padding: 8px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .error-text {
-  color: #b3261e;
+  color: var(--color-danger);
   font-size: 13px;
   margin-bottom: 12px;
 }
 
 .card {
-  background: white;
-  border-radius: 10px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
   padding: 16px;
   margin-bottom: 12px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 .row-actions {
   display: flex;
   gap: 8px;
+}
+
+/* Buttons (new component-driven variants; the bare `button` rule above still
+   covers pages that haven't migrated to <Button>) */
+.btn {
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--color-accent);
+  color: var(--color-sidebar);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.btn-danger {
+  background: transparent;
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+/* Badge */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.badge-neutral {
+  background: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.badge-danger {
+  background: rgba(229, 72, 77, 0.15);
+  color: var(--color-danger);
+}
+
+/* Stat cards */
+.stats-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+}
+
+.stat-card-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+}
+
+.stat-card-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+/* Form field */
+.field {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.field-label {
+  display: block;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+.field input,
+.field textarea,
+.field select {
+  margin-bottom: 0;
 }
