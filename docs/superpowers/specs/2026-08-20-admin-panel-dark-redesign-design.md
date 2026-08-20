@@ -37,13 +37,15 @@ eklenecek:
 
 ```css
 :root {
+  color-scheme: dark;
+
   --color-bg: #171310;
   --color-sidebar: #0F0B08;
   --color-card: #211A15;
   --color-border: #322718;
   --color-accent: #D9A566;
   --color-text-primary: #EFE6DA;
-  --color-text-secondary: #6B5C4E;
+  --color-text-secondary: #9A8878;
   --color-text-muted: #3A2E20;
   --color-danger: #E5484D;
 
@@ -51,6 +53,15 @@ eklenecek:
   --radius-full: 999px;
 }
 ```
+
+`color-scheme: dark` is required alongside the palette — without it, native browser
+controls (select dropdowns, checkboxes, file-input pickers, scrollbars) stay
+light-themed regardless of the CSS. `--color-text-secondary` was revised from
+the mockup's original `#6B5C4E` to `#9A8878` after the implementation's final
+review found the original failed WCAG AA contrast (~2.5-2.9:1 against the
+card/sidebar backgrounds it's used on for labels, stat labels, and inactive
+nav links); `#9A8878` passes AA (~5.0-5.8:1) while keeping the same dark
+identity.
 
 Mevcut açık renkli kahve paleti (`#6B3E26` vb.) mobil uygulamada kalmaya devam
 eder — admin panel artık kendi (koyu) kimliğini taşır, marka rengi olarak
