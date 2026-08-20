@@ -124,8 +124,6 @@ export function ScanPage() {
 
   return (
     <div>
-      <h2>QR Tarayıcı</h2>
-
       <div className="card" style={{ maxWidth: 480 }}>
         <label>
           Ürün

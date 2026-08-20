@@ -82,7 +82,6 @@ export function BlogPage() {
 
   return (
     <div>
-      <h2>Blog</h2>
       <form className="card" onSubmit={handleSubmit} style={{ maxWidth: 480 }}>
         <label>
           Başlık

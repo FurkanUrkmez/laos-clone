@@ -87,7 +87,6 @@ export function CampaignsPage() {
 
   return (
     <div>
-      <h2>Kampanyalar</h2>
       <form className="card" onSubmit={handleSubmit} style={{ maxWidth: 480 }}>
         <label>
           Başlık

@@ -13,7 +13,6 @@ export function CustomersPage() {
 
   return (
     <div>
-      <h2>Müşteriler</h2>
       <table>
         <thead>
           <tr>

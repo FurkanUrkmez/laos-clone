@@ -1,11 +1,12 @@
 :root {
+  color-scheme: dark;
   --color-bg: #171310;
   --color-sidebar: #0F0B08;
   --color-card: #211A15;
   --color-border: #322718;
   --color-accent: #D9A566;
   --color-text-primary: #EFE6DA;
-  --color-text-secondary: #6B5C4E;
+  --color-text-secondary: #9A8878;
   --color-text-muted: #3A2E20;
   --color-danger: #E5484D;
 
