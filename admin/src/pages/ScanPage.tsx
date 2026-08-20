@@ -60,7 +60,17 @@ export function ScanPage() {
       .catch(() => setCameraError(true));
 
     return () => {
-      scanner.stop().catch(() => {});
+      try {
+        // start() is async and may not have resolved yet when this cleanup
+        // runs (e.g. React StrictMode's extra dev-mode mount/unmount, or a
+        // fast navigation away from the page) — in that case the scanner
+        // isn't actually running yet and stop() throws *synchronously*
+        // ("Cannot stop, scanner is not running or paused"), which a
+        // trailing .catch() alone doesn't protect against.
+        scanner.stop().catch(() => {});
+      } catch {
+        // Nothing was running; safe to ignore.
+      }
     };
   }, []);
 
