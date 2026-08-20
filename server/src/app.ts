@@ -6,6 +6,7 @@ import { adminRouter } from './routes/admin.routes';
 import { loyaltyRouter } from './routes/loyalty.routes';
 import { campaignsRouter } from './routes/campaigns.routes';
 import { blogRouter } from './routes/blog.routes';
+import { productsRouter } from './routes/products.routes';
 import { errorHandler } from './middleware/errorHandler';
 
 export const app = express();
@@ -23,5 +24,6 @@ app.use('/api/admin', adminRouter);
 app.use('/api/loyalty', loyaltyRouter);
 app.use('/api/campaigns', campaignsRouter);
 app.use('/api/blog', blogRouter);
+app.use('/api/products', productsRouter);
 
 app.use(errorHandler);
