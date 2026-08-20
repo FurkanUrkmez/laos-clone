@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
-import type { IconName } from '../../types';
 import { ScreenContainer } from '../../components/ScreenContainer';
 import { CoffeeProgress } from '../../components/CoffeeProgress';
 import { Button } from '../../components/Button';
 import { useAuthStore } from '../../store/useAuthStore';
 import { myLoyaltyRequest, MyLoyalty } from '../../services/api/loyalty';
-import { campaignsRequest } from '../../services/api/campaigns';
-import { blogPostsRequest } from '../../services/api/blog';
+import { campaignsRequest, Campaign } from '../../services/api/campaigns';
+import { blogPostsRequest, BlogPost } from '../../services/api/blog';
+import { usePaginatedList } from '../../hooks/usePaginatedList';
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -18,17 +19,51 @@ function getGreeting(): string {
   return 'İyi Akşamlar';
 }
 
-interface FeedItem {
-  id: string;
-  icon: IconName;
+const CARD_LIST_STYLE = { gap: 12, paddingRight: 16 };
+
+function FeedCard({
+  imageUrl,
+  fallbackIcon,
+  title,
+  description,
+}: {
+  imageUrl: string | null;
+  fallbackIcon: React.ComponentProps<typeof Ionicons>['name'];
   title: string;
   description: string;
+}) {
+  return (
+    <View className="w-60 rounded-2xl bg-cardBackground p-4">
+      {imageUrl ? (
+        <Image
+          source={{ uri: imageUrl }}
+          style={{ height: 96, width: '100%', borderRadius: 16, marginBottom: 12 }}
+          contentFit="cover"
+          cachePolicy="memory-disk"
+          transition={150}
+        />
+      ) : (
+        <View className="mb-3 h-10 w-10 items-center justify-center rounded-full bg-cream">
+          <Ionicons name={fallbackIcon} size={20} color="#6B3E26" />
+        </View>
+      )}
+      <Text className="text-base font-semibold text-textPrimary" numberOfLines={1}>
+        {title}
+      </Text>
+      <Text className="mt-1 text-sm text-textSecondary" numberOfLines={2}>
+        {description}
+      </Text>
+    </View>
+  );
 }
 
-const BLOG_EXCERPT_LENGTH = 80;
-
-function excerpt(text: string): string {
-  return text.length > BLOG_EXCERPT_LENGTH ? `${text.slice(0, BLOG_EXCERPT_LENGTH)}…` : text;
+function LoadMoreFooter({ loading }: { loading: boolean }) {
+  if (!loading) return null;
+  return (
+    <View className="w-10 items-center justify-center">
+      <ActivityIndicator color="#6B3E26" />
+    </View>
+  );
 }
 
 export function HomeScreen() {
@@ -58,36 +93,12 @@ export function HomeScreen() {
     };
   }, []);
 
-  const [feed, setFeed] = useState<FeedItem[]>([]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    Promise.all([campaignsRequest(), blogPostsRequest()])
-      .then(([campaigns, posts]) => {
-        if (cancelled) return;
-        const campaignItems: FeedItem[] = campaigns.map((c) => ({
-          id: `campaign-${c.id}`,
-          icon: 'pricetag-outline',
-          title: c.title,
-          description: c.description ?? '',
-        }));
-        const postItems: FeedItem[] = posts.map((p) => ({
-          id: `blog-${p.id}`,
-          icon: 'book-outline',
-          title: p.title,
-          description: excerpt(p.content),
-        }));
-        setFeed([...campaignItems, ...postItems]);
-      })
-      .catch((err) => {
-        console.warn('Kampanyalar/bloglar yüklenemedi', err);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const campaigns = usePaginatedList<Campaign>((page) =>
+    campaignsRequest(page).then(({ campaigns: items, hasMore }) => ({ items, hasMore })),
+  );
+  const blogPosts = usePaginatedList<BlogPost>((page) =>
+    blogPostsRequest(page).then(({ posts: items, hasMore }) => ({ items, hasMore })),
+  );
 
   return (
     <ScreenContainer scroll>
@@ -118,20 +129,45 @@ export function HomeScreen() {
         </View>
       </View>
 
-      <Text className="mb-3 mt-6 text-lg font-semibold text-textPrimary">
-        Kampanyalar ve Bloglar
-      </Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {feed.map((item) => (
-          <View key={item.id} className="mr-3 w-60 rounded-2xl bg-cardBackground p-4">
-            <View className="mb-3 h-10 w-10 items-center justify-center rounded-full bg-cream">
-              <Ionicons name={item.icon} size={20} color="#6B3E26" />
-            </View>
-            <Text className="text-base font-semibold text-textPrimary">{item.title}</Text>
-            <Text className="mt-1 text-sm text-textSecondary">{item.description}</Text>
-          </View>
-        ))}
-      </ScrollView>
+      <Text className="mb-3 mt-6 text-lg font-semibold text-textPrimary">Kampanyalar</Text>
+      <FlatList
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        data={campaigns.items}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={CARD_LIST_STYLE}
+        onEndReachedThreshold={0.5}
+        onEndReached={campaigns.loadMore}
+        ListFooterComponent={<LoadMoreFooter loading={campaigns.loading} />}
+        renderItem={({ item }) => (
+          <FeedCard
+            imageUrl={item.imageUrl}
+            fallbackIcon="pricetag-outline"
+            title={item.title}
+            description={item.description ?? ''}
+          />
+        )}
+      />
+
+      <Text className="mb-3 mt-6 text-lg font-semibold text-textPrimary">Bloglar</Text>
+      <FlatList
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        data={blogPosts.items}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={CARD_LIST_STYLE}
+        onEndReachedThreshold={0.5}
+        onEndReached={blogPosts.loadMore}
+        ListFooterComponent={<LoadMoreFooter loading={blogPosts.loading} />}
+        renderItem={({ item }) => (
+          <FeedCard
+            imageUrl={item.coverImageUrl}
+            fallbackIcon="book-outline"
+            title={item.title}
+            description={item.excerpt}
+          />
+        )}
+      />
     </ScreenContainer>
   );
 }

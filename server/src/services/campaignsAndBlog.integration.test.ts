@@ -79,12 +79,36 @@ describe('customer-facing campaigns and blog listings', () => {
   });
 
   it('only returns active campaigns', async () => {
-    const campaigns = await listActiveCampaigns(businessId);
-    expect(campaigns.map((c) => c.title)).toEqual(['Active Campaign']);
+    const { items, hasMore } = await listActiveCampaigns(businessId, { page: 1, limit: 10 });
+    expect(items.map((c) => c.title)).toEqual(['Active Campaign']);
+    expect(hasMore).toBe(false);
   });
 
   it('only returns published blog posts', async () => {
-    const posts = await listPublishedBlogPosts(businessId);
-    expect(posts.map((p) => p.title)).toEqual(['Published Post']);
+    const { items, hasMore } = await listPublishedBlogPosts(businessId, { page: 1, limit: 10 });
+    expect(items.map((p) => p.title)).toEqual(['Published Post']);
+    expect(hasMore).toBe(false);
+  });
+
+  it('paginates blog posts and returns an excerpt instead of full content', async () => {
+    const longContent = 'x'.repeat(200);
+    await prisma.blogPost.createMany({
+      data: [
+        { businessId, title: 'Long Post', slug: 'long-post', content: longContent, isPublished: true, publishedAt: new Date() },
+        { businessId, title: 'Second Post', slug: 'second-post', content: 'short', isPublished: true, publishedAt: new Date() },
+      ],
+    });
+
+    const page1 = await listPublishedBlogPosts(businessId, { page: 1, limit: 2 });
+    expect(page1.items).toHaveLength(2);
+    expect(page1.hasMore).toBe(true);
+    expect(page1.items.every((p) => !('content' in p))).toBe(true);
+    const longPost = page1.items.find((p) => p.title === 'Long Post');
+    expect(longPost?.excerpt.length).toBeLessThan(longContent.length);
+    expect(longPost?.excerpt.endsWith('…')).toBe(true);
+
+    const page2 = await listPublishedBlogPosts(businessId, { page: 2, limit: 2 });
+    expect(page2.hasMore).toBe(false);
+    expect(page2.items).toHaveLength(1);
   });
 });

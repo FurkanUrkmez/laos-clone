@@ -10,7 +10,13 @@ export interface Campaign {
   isActive: boolean;
 }
 
-export async function campaignsRequest(): Promise<Campaign[]> {
-  const { data } = await apiClient.get<{ campaigns: Campaign[] }>('/campaigns');
-  return data.campaigns;
+export interface CampaignsPage {
+  campaigns: Campaign[];
+  page: number;
+  hasMore: boolean;
+}
+
+export async function campaignsRequest(page = 1, limit = 10): Promise<CampaignsPage> {
+  const { data } = await apiClient.get<CampaignsPage>('/campaigns', { params: { page, limit } });
+  return data;
 }

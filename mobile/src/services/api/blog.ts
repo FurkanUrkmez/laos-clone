@@ -4,12 +4,18 @@ export interface BlogPost {
   id: string;
   title: string;
   slug: string;
-  content: string;
+  excerpt: string;
   coverImageUrl: string | null;
   publishedAt: string | null;
 }
 
-export async function blogPostsRequest(): Promise<BlogPost[]> {
-  const { data } = await apiClient.get<{ posts: BlogPost[] }>('/blog');
-  return data.posts;
+export interface BlogPostsPage {
+  posts: BlogPost[];
+  page: number;
+  hasMore: boolean;
+}
+
+export async function blogPostsRequest(page = 1, limit = 10): Promise<BlogPostsPage> {
+  const { data } = await apiClient.get<BlogPostsPage>('/blog', { params: { page, limit } });
+  return data;
 }
